@@ -94,6 +94,9 @@ int8_t PGN_250_Size = sizeof(PGN_250) - 1;
 uint8_t aog2Count = 0;
 float sensorReading;
 float sensorSample;
+// Neue Variablen für Drucksensor-Zähllogik
+float sensorSampleOld = 0.0;
+int Count = 1;
 
 elapsedMillis gpsSpeedUpdateTimer = 0;
 
