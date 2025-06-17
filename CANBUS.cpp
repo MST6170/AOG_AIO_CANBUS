@@ -11,7 +11,8 @@
 // AIO 4.x version board, pins 16 and 17, use CAN3
 // 
 // Change  vvvv
-FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_256> TeensyCAN;
+//FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_256> TeensyCAN;
+extern FlexCAN_T4<CAN3, RX_SIZE_1024, TX_SIZE_1024> Can0; //added
 // Change  ^^^^
 
 const int8_t filterID = 0;
@@ -37,25 +38,25 @@ CAN_message_t CANBUSData;
 void CAN_Setup() {
 	// we're only listening, so no need to claim an address?
 	lastCANCommand = millis();
-	TeensyCAN.begin();
-	TeensyCAN.setBaudRate(250000); // , LISTEN_ONLY);
-	TeensyCAN.enableFIFO();
-	TeensyCAN.setFIFOFilter(REJECT_ALL);
+	Can0.begin();
+	Can0.setBaudRate(250000); // , LISTEN_ONLY);
+	Can0.enableFIFO();
+	Can0.setFIFOFilter(REJECT_ALL);
 	delay(1000);
 	if (CANInfo[filterID] > 0xffff) {
 		Serial.print("Setting extended filter 0x"); Serial.println(CANInfo[filterID], HEX);
-		TeensyCAN.setFIFOFilter(0, CANInfo[filterID], EXT);
+		Can0.setFIFOFilter(0, CANInfo[filterID], EXT);
 	}
 	else {
 		Serial.print("Setting standard filter 0x"); Serial.println(CANInfo[filterID], HEX);
-		TeensyCAN.setFIFOFilter(0, CANInfo[filterID], STD);
+		Can0.setFIFOFilter(0, CANInfo[filterID], STD);
 	}
 	if (debugCANBUS) Serial.println("Initialised CANBUS");
 	delay(3000);
 }
 
 void CANBUS_Receive() {
-	if (TeensyCAN.read(CANBUSData)) {
+	if (Can0.read(CANBUSData)) {
 		// if we receive a filtered message, do the bit checking
 		// There should be no need to check a CANBUS ID because we're filtering on it - should only receive filtered messages
 		if (debugCANBUS) {
