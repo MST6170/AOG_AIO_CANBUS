@@ -337,35 +337,44 @@ void autosteerLoop()
       previous = 0;
     }
 
-    // Pressure sensor?
-    if (steerConfig.PressureSensor)
-    {
-      sensorSample = (float)analogRead(PRESSURE_SENSOR_PIN);
-      sensorSample *= 0.25;
-      sensorReading = sensorReading * 0.6 + sensorSample * 0.4;
-      if (sensorReading >= steerConfig.PulseCountMax)
-      {
-          steerSwitch = 1; // reset values like it turned off
-          currentState = 1;
-          previous = 0;
-      }
-    }
+    // Pressure sensor?   // modif  bric bric for NH
+if (steerConfig.PressureSensor) {
+  sensorSample = (float)analogRead(PRESSURE_SENSOR_PIN);
+  // sensorSample *= 0.25;
+  // sensorReading = sensorReading * 0.6 + sensorSample * 0.4;
 
-    // Current sensor?
-    if (steerConfig.CurrentSensor)
-    {
-      sensorSample = (float)analogRead(CURRENT_SENSOR_PIN);
-      sensorSample = (abs(775 - sensorSample)) * 0.5;
-      sensorReading = sensorReading * 0.7 + sensorSample * 0.3;    
-      sensorReading = min(sensorReading, 255);
 
-      if (sensorReading >= steerConfig.PulseCountMax)
-      {
-          steerSwitch = 1; // reset values like it turned off
-          currentState = 1;
-          previous = 0;
-      }
-    }
+
+
+  if (abs(sensorSample - sensorSampleOld) > 1) Count++;  //  test 1
+  else Count--;
+  if (Count > 100) Count = 100;
+  if (Count < 1) Count = 1;
+  sensorReading = Count;
+  sensorSampleOld = sensorSample;
+
+  if (Count >= steerConfig.PulseCountMax)
+  // if (sensorReading >= steerConfig.PulseCountMax)
+  {
+    steerSwitch = 1;  // reset values like it turned off
+    currentState = 1;
+    previous = 0;
+  }
+}
+
+// Current sensor?
+if (steerConfig.CurrentSensor) {
+  sensorSample = (float)analogRead(CURRENT_SENSOR_PIN);
+  sensorSample = (abs(775 - sensorSample)) * 0.5;
+  sensorReading = sensorReading * 0.7 + sensorSample * 0.3;
+  sensorReading = min(sensorReading, 255);
+
+  if (sensorReading >= steerConfig.PulseCountMax) {
+    steerSwitch = 1;  // reset values like it turned off
+    currentState = 1;
+    previous = 0;
+  }
+}
 
     remoteSwitch = digitalRead(REMOTE_PIN); //read auto steer enable switch open = 0n closed = Off
     switchByte = 0;
