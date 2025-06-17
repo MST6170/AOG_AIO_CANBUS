@@ -55,7 +55,8 @@ CAN_message_t wasMessage;
 // Danfoss PVEA-CI CANBUS valve (or any other CAN valve using standard ISOBUS flow commands)
 // Danfoss SASA IID sensor
 uint32_t wasMessageID = 0x018FF0B15;
-uint32_t steerSwID = 0x018EFFF21;
+//uint32_t steerSwID = 0x018EFFF21; orginalcode
+uint32_t steerSwID = 0x018FFBB31; //NH FR780 Autosteerbutton
 uint32_t pressureMessageID = 0x018FF034E;
 uint32_t SASAIIDMessageID = 0x0CFF104D;
 uint32_t flowCommandID = 0x0CFE3022;
